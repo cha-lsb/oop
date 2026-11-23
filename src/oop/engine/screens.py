@@ -74,38 +74,49 @@ class CharacterCreationState(GameState):
         self.on_done(hero)
 
     def draw(self, surface):
-        renderer.title(surface, "CRÉATION DU PERSONNAGE", 56)
-        renderer.text(surface, "Nom :", (140, 130), DIM_TEXT)
-        renderer.text(surface, (self.name or "…") + "_", (210, 130), TEXT_COLOR)
+        width = surface.get_width()
+        middle = width // 2
+        renderer.title(surface, "CRÉATION DU PERSONNAGE", 50)
+        renderer.text(surface, f"Nom :  {self.name or '…'}_", (middle, 100),
+                      TEXT_COLOR, center=True)
+
+        # The cards share the window's width and stay centred, however many
+        # classes the roster offers.
+        count = len(self.choices)
+        gap = 30
+        card_width = min(260, (width - 2 * 40 - (count - 1) * gap) // count)
+        left = (width - count * card_width - (count - 1) * gap) // 2
 
         for index, (label, _, color) in enumerate(self.choices):
             sample = self.samples[index]
             chosen = index == self.selected
-            rect = pygame.Rect(120 + index * 190, 180, 170, 250)
+            rect = pygame.Rect(left + index * (card_width + gap), 135,
+                               card_width, 380)
             renderer.panel(surface, rect)
             if chosen:
                 pygame.draw.rect(surface, CURSOR_COLOR, rect, width=2,
                                  border_radius=6)
             renderer.text(surface, str(index + 1), (rect.x + 12, rect.y + 10),
                           DIM_TEXT, FONT_SIZE_SMALL)
-            renderer.text(surface, label.upper(), (rect.centerx, rect.y + 36),
+            renderer.text(surface, label.upper(), (rect.centerx, rect.y + 32),
                           ACCENT if chosen else TEXT_COLOR, center=True, bold=True)
-            pygame.draw.circle(surface, color, (rect.centerx, rect.y + 78), 16)
+            renderer.draw_token(surface, sample, (rect.centerx, rect.y + 115),
+                                60, color)
             rows = (("PV", sample.max_hp), ("Force", sample.strength),
                     ("CC", sample.combat_skill), ("End.", sample.stamina),
                     ("Init.", sample.initiative),
                     ("Att.", sample.attacks_per_round))
             for row, (key, value) in enumerate(rows):
-                y = rect.y + 110 + row * LINE_HEIGHT
-                renderer.text(surface, key, (rect.x + 18, y), DIM_TEXT,
+                y = rect.y + 200 + row * LINE_HEIGHT
+                renderer.text(surface, key, (rect.x + 36, y), DIM_TEXT,
                               FONT_SIZE_SMALL)
-                renderer.text(surface, value, (rect.right - 36, y), TEXT_COLOR,
+                renderer.text(surface, value, (rect.right - 52, y), TEXT_COLOR,
                               FONT_SIZE_SMALL)
 
         renderer.text(surface, self.samples[self.selected].description,
-                      (480, 470), ACCENT, center=True)
-        renderer.text(surface, "1-4 choisir      Entrée valider",
-                      (480, 530), DIM_TEXT, center=True)
+                      (middle, 550), ACCENT, center=True)
+        renderer.text(surface, f"1-{count} choisir      Entrée valider",
+                      (middle, 595), DIM_TEXT, center=True)
 
 
 class InventoryState(GameState):

@@ -92,6 +92,7 @@ rules. The engine never imports from `game/`; the two meet in `main.py`.
 ├── uv.lock                 <- Locked dependency versions.
 │
 ├── game                    <- Course code: the rules and content of the game.
+│   ├── assets/avatars      <- Optional PNG portraits (barbarian.png, goblin.png, ...).
 │   ├── entity.py           <- Entity, the abstract base of characters and items.
 │   ├── character
 │   │   ├── abstract.py     <- Character: stats, equipment, attack, defence.

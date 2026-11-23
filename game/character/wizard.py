@@ -1,7 +1,10 @@
 from game.character.abstract import Character
+from game.constants import AVATAR_DIR
 from game.dice import Dice
 
 class Wizard(Character):
+    avatar = AVATAR_DIR / "wizard.png"
+
     def __init__(self, name: str):
         super().__init__(
             name=name, 

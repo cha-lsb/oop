@@ -1,14 +1,17 @@
 from game.character.abstract import Character
+from game.constants import AVATAR_DIR
 from game.dice import Dice
 
 class Barbarian(Character):
+    avatar = AVATAR_DIR / "barbarian.png"
+
     def __init__(self, name: str):
         super().__init__(
             name=name, 
             hp=42, 
             strength=9, 
             combat_skill=55,
-            description="une hache, une mauvaise humeur, aucun plan"
+            description="Une hache, une mauvaise humeur, aucun plan"
         )
         self.rage = 3
 

@@ -5,6 +5,7 @@ from game.entity import Entity
 
 
 class Character(Entity):
+    avatar = None
     belt_slots = BELT_SLOTS
     backpack_slots = BACKPACK_SLOTS
 

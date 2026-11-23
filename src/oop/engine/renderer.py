@@ -1,7 +1,8 @@
 """Drawing primitives.
 
-Internal engine code. Everything the game shows is a rectangle, a circle or a
-line of text — no sprite sheets, no animation system.
+Internal engine code. Everything the game shows is a rectangle, a circle, a
+line of text or an optional avatar image — no sprite sheets, no animation
+system.
 
 The one idea worth noticing is `draw_actor`: it accepts anything that answers
 the four questions of the `Renderable` contract. It never asks what class it
@@ -100,12 +101,65 @@ def health_bar(surface, rect, current, maximum):
         pygame.draw.rect(surface, color, filled, border_radius=3)
 
 
-def draw_actor(surface, actor, center, radius=16, with_name=True, color=None):
+_avatars = {}
+
+
+def avatar_image(path, radius):
+    """Return an image file cropped to a disc of `radius`, or None.
+
+    Loaded once per (file, size) and cached. A missing or unreadable file is
+    not an error: the caller simply falls back to a plain token.
+
+    Args:
+        path (str | os.PathLike | None): the image file.
+        radius (int): disc radius in pixels.
+
+    Returns:
+        pygame.Surface | None: a 2*radius square with a transparent corner,
+        or None when there is no usable image.
+    """
+    if path is None:
+        return None
+    key = (str(path), radius)
+    if key not in _avatars:
+        try:
+            image = pygame.image.load(str(path)).convert_alpha()
+        except (FileNotFoundError, pygame.error):
+            _avatars[key] = None
+            return None
+        size = 2 * radius
+        image = pygame.transform.smoothscale(image, (size, size))
+        mask = pygame.Surface((size, size), pygame.SRCALPHA)
+        pygame.draw.circle(mask, (255, 255, 255, 255), (radius, radius), radius)
+        image.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
+        _avatars[key] = image
+    return _avatars[key]
+
+
+def draw_token(surface, actor, center, radius, color):
+    """Draw the actor's avatar, or a coloured disc with its initial."""
+    image = avatar_image(getattr(actor, "avatar", None), radius)
+    if image is not None:
+        surface.blit(image, image.get_rect(center=center))
+    else:
+        pygame.draw.circle(surface, color, center, radius)
+        if radius >= 20 and actor.display_name:
+            initial = actor.display_name[0].upper()
+            text(surface, initial, center, TEXT_COLOR,
+                 max(FONT_SIZE, radius), bold=True, center=True)
+    pygame.draw.circle(surface, PANEL_EDGE, center, radius, width=1)
+
+
+def draw_actor(surface, actor, center, radius=16, with_name=True, color=None,
+               with_hp=False):
     """Draw anything that satisfies the `Renderable` contract.
 
     This function is the whole argument of module 5. It reads `display_name`,
     `hp` and `max_hp` and draws them. It has no idea whether it was handed a
     Barbarian, a goblin or something written after it was.
+
+    An `avatar` attribute (an image path) is optional: an actor without one,
+    or whose file is missing, is drawn as a coloured disc.
 
     Args:
         surface (pygame.Surface): where to draw.
@@ -115,10 +169,10 @@ def draw_actor(surface, actor, center, radius=16, with_name=True, color=None):
         with_name (bool): draw the name and health bar under the token.
         color (tuple | None): override the token colour. Creatures have none
             of their own, so the combat screen tints them from here.
+        with_hp (bool): also write "hp / max_hp" under the health bar.
     """
     color = color or getattr(actor, "color", HERO_COLOR)
-    pygame.draw.circle(surface, color, center, radius)
-    pygame.draw.circle(surface, PANEL_EDGE, center, radius, width=1)
+    draw_token(surface, actor, center, radius, color)
     if not with_name:
         return
     x, y = center
@@ -126,6 +180,9 @@ def draw_actor(surface, actor, center, radius=16, with_name=True, color=None):
          FONT_SIZE_SMALL, center=True)
     health_bar(surface, (x - radius - 8, y + radius + 22, 2 * (radius + 8), 5),
                actor.hp, actor.max_hp)
+    if with_hp:
+        text(surface, f"{actor.hp} / {actor.max_hp} PV", (x, y + radius + 40),
+             TEXT_COLOR, FONT_SIZE_SMALL, center=True)
 
 
 def slot(surface, rect, label=None, item=None, selected=False):

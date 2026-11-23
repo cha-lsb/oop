@@ -1,22 +1,27 @@
 from game.character import Character, Wizard
+from game.constants import AVATAR_DIR
 from game.item import Weapon, Armor, Potion
 
 class Goblin(Character):
+	avatar = AVATAR_DIR / "goblin.png"
 	def __init__(self):
 		super().__init__("Goblin", hp=20, strength=7, combat_skill=40, stamina=1)
 		self.store(Weapon("Dague", 2, "In a poor shape but quick"))
 
 class Orc(Character):
+	avatar = AVATAR_DIR / "orc.png"
 	def __init__(self):
 		super().__init__("Orc", hp=28, strength=10, combat_skill=45, stamina=2)
 		self.equip(Armor("Rust plates", 2, 1, "Somehow holds together"))
 
 class Skeleton(Character):
+	avatar = AVATAR_DIR / "skeleton.png"
 	def __init__(self):
 		super().__init__("Skeleton", hp=18, strength=6, combat_skill=45, stamina=0)
 		self.equip(Armor("Thick leather", 3, description="good, not great"))
 
 class GiantRat(Character):
+	avatar = AVATAR_DIR / "giant_rat.png"
 	def __init__(self):
 		super().__init__(
 			"Rat geant",
@@ -30,6 +35,7 @@ class GiantRat(Character):
 		)
 
 class Troll(Character):
+	avatar = AVATAR_DIR / "troll.png"
 	REGEN = 4
 	def __init__(self):
 		super().__init__(
@@ -47,6 +53,7 @@ class Troll(Character):
 		return f"{super().defend()}. Feels better (+{healed} HP)"
 
 class SkeletonWizard(Wizard):
+	avatar = AVATAR_DIR / "skeleton_wizard.png"
 	def __init__(self):
 		super().__init__("Sorcier Squelette")
 		self.max_hp = self.hp = 26

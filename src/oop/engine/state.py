@@ -95,7 +95,8 @@ class ExploreState(GameState):
         renderer.title(surface, "La Horde", 40)
         self.level.draw(surface)
         renderer.draw_actor(surface, self.player,
-                            self.level.screen_position(self.player.position))
+                            self.level.screen_position(self.player.position),
+                            radius=21)
         renderer.panel(surface, (656, 96, 272, 200), "HÉROS")
         y = 130
         for label, value in (("PV", f"{self.player.hp} / {self.player.max_hp}"),
@@ -178,24 +179,26 @@ class CombatState(GameState):
 
     def draw(self, surface):
         renderer.title(surface, "COMBAT", 40)
-        renderer.draw_actor(surface, self.player, (240, 180), radius=28)
-        renderer.draw_actor(surface, self.enemy, (720, 180), radius=28,
-                            color=getattr(self.enemy, "color", ENEMY_COLOR))
-        renderer.text(surface, "contre", (480, 180), DIM_TEXT, center=True)
+        renderer.draw_actor(surface, self.player, (240, 160), radius=72,
+                            with_hp=True)
+        renderer.draw_actor(surface, self.enemy, (720, 160), radius=72,
+                            color=getattr(self.enemy, "color", ENEMY_COLOR),
+                            with_hp=True)
+        renderer.text(surface, "contre", (480, 160), DIM_TEXT, center=True)
 
-        renderer.panel(surface, (32, 280, 380, 200), "ACTIONS")
+        renderer.panel(surface, (32, 300, 380, 200), "ACTIONS")
         for index, label in enumerate(ACTIONS):
             available = self.rules.is_available(self.player, index + 1)
             color = TEXT_COLOR if available and self.phase == "player" else DIM_TEXT
-            renderer.text(surface, f"{index + 1}. {label}", (52, 318 + index * 30),
+            renderer.text(surface, f"{index + 1}. {label}", (52, 338 + index * 30),
                           color)
-        renderer.text(surface, "F1 détail des calculs", (52, 446), DIM_TEXT,
+        renderer.text(surface, "F1 détail des calculs", (52, 466), DIM_TEXT,
                       FONT_SIZE_SMALL)
 
-        renderer.panel(surface, (432, 280, 496, 300), "JOURNAL")
+        renderer.panel(surface, (432, 300, 496, 300), "JOURNAL")
         for offset, line in enumerate(self.log[-11:]):
             color = DEBUG_TEXT if line.startswith("   ") else TEXT_COLOR
-            renderer.text(surface, line, (450, 316 + offset * LINE_HEIGHT),
+            renderer.text(surface, line, (450, 336 + offset * LINE_HEIGHT),
                           color, FONT_SIZE_SMALL)
 
 
