@@ -14,7 +14,7 @@ class Priest(Character):
             stamina=2,
             initiative=38, 
             mana=15,
-            description="Une masse dans une main, sa foi dans l'autre. Do you think I'm spooky?"
+            description="Do you think I'm spooky?"
         )
 
     def use_special(self, target: Character) -> str:

@@ -9,7 +9,7 @@ class Barbarian(Character):
         super().__init__(
             name=name, 
             hp=42, 
-            strength=9, 
+            strength=9,
             combat_skill=55,
             description="Une hache, une mauvaise humeur, aucun plan"
         )

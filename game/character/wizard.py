@@ -14,7 +14,7 @@ class Wizard(Character):
             stamina = 2,
             initiative = 35, 
             mana=20,
-            description="frele, sur de lui, difficile a esquiver"
+            description="Stupeflix!"
         )
 
     def attack(self, target: Character):
