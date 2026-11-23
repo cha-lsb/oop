@@ -3,7 +3,7 @@ from src.oop.engine.screens import CharacterCreationState
 from src.oop.engine.state import ExploreState
 from src.oop.engine.window import Game
 from game import combat
-from game.encounters import ENCOUNTERS
+from game.encounters import random_encounters
 from game.roster import PLAYABLE
 
 
@@ -14,7 +14,7 @@ def start_adventure(game, hero):
         game (Game): the running game.
         hero (Character): the character the player just built.
     """
-    level = GameMap(encounters=ENCOUNTERS)
+    level = GameMap(encounters=random_encounters())
     game.change_state(ExploreState(game, hero, level, combat))
 
 
