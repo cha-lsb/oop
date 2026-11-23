@@ -41,6 +41,7 @@ class Character(Entity):
 
         self.defending = False
         self.last_roll = {}
+        self.last_damage = None
 
     def summary(self) -> str:
         return F"{self.name} - {self.hp}/{self.max_hp} PV"
@@ -64,9 +65,11 @@ class Character(Entity):
 
         dealt = max(MIN_DAMAGES, amount - reduction)
         self.hp = max(0, self.hp - dealt)
+        self.last_damage = {"raw": amount, "reduction": reduction,
+                            "pierced": pierce_armor, "dealt": dealt}
         return dealt
 
-    def roll_to_it(self, modifier: int=0) -> bool:
+    def roll_to_hit(self, modifier: int=0) -> bool:
         roll = Dice.d100()
         target_number = self.combat_skill + modifier
         self.last_roll = {"roll": roll, "target": target_number,
@@ -74,7 +77,7 @@ class Character(Entity):
         return roll <= target_number
 
     def attack(self, target: Character) -> str:
-        if not self.roll_to_it():
+        if not self.roll_to_hit():
             return (f"{self.name} attack {target.name}: "
                     f"{self.last_roll['roll']} against {self.last_roll['target']}, missed!")
 
@@ -83,7 +86,7 @@ class Character(Entity):
         return f"{self.name} hits {target.name}: {dealt} taken"
 
     def defend(self):
-        """Raise the quard once per round"""
+        """Raise the guard once per round"""
         self.defending = True
         return f"{self.name} is on their guards: +{DEFEND_BONUS}"
 
@@ -111,7 +114,7 @@ class Character(Entity):
             return f"{self.name} takes {item.name} with both hands"
 
         if self.right_hand is not None and self.right_hand.slot == "two_hands":
-            self._displace(sel.right_hand)
+            self._displace(self.right_hand)
             self.right_hand = None
         if self.right_hand is None:
             self.right_hand = item
@@ -121,6 +124,15 @@ class Character(Entity):
             self._displace(self.right_hand)
             self.right_hand = item
         return F"{self.name} equips {item.name}"
+
+    def swap_hands(self) -> str:
+        """Swap what the right and left hands are holding"""
+        if self.right_hand is not None and self.right_hand.slot == "two_hands":
+            return f"{self.right_hand.name} needs both hands"
+        if self.right_hand is None and self.left_hand is None:
+            return f"{self.name} has nothing in hand"
+        self.right_hand, self.left_hand = self.left_hand, self.right_hand
+        return f"{self.name} swaps hands"
 
     def equipped(self):
         """Returns what's currently equiped"""
@@ -170,12 +182,12 @@ class Character(Entity):
 
     def use_potion(self):
         if not self.belt:
-            return f"{self.name} looks for a potion on hils belt: nothing"
+            return f"{self.name} looks for a potion on his belt: nothing"
         potion = self.belt.pop(0)
         return potion.apply_effect(self)
 
     def use_special(self, target):
-        if not self.roll_to_it(-POWER_ATTACK_PENALTY):
+        if not self.roll_to_hit(-POWER_ATTACK_PENALTY):
             return (f"{self.name} tries a power punch:"
                     f"{self.last_roll['roll']} against {self.last_roll['target']}, missed!")
         raw_damages = 2 * self.damage_output() + Dice.d6()

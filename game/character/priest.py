@@ -17,11 +17,11 @@ class Priest(Character):
     def use_special(self, target: Character) -> str:
         cost = 3
         if self.mana < cost:
-            return f"{self.name} doesn't have enough mana ({self.mana} / cost)"
+            return f"{self.name} doesn't have enough mana ({self.mana} / {cost})"
         healed = self.heal(12)
         if healed == 0:
             return F"{self.name} wasted his turn, he's already full life"
 
         self.mana -= cost
-        return (f"{self.name} summons god to heal them: +{healed} HP"
+        return (f"{self.name} summons god to heal them: +{healed} HP" 
                 f"(mana: {self.mana})")

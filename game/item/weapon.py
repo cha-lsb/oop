@@ -12,5 +12,5 @@ class Weapon(Item):
         return target.equip(self)
 
     def summary(self):
-        hands = "two-hands weapon" if self.slot == "two-hands" else ""
+        hands = "two-hands weapon" if self.slot == "two_hands" else ""
         return f"{self.name}{hands} (+{self.damage_bonus} damages)"

@@ -12,11 +12,11 @@ class Barbarian(Character):
         )
         self.rage = 3
 
-        def use_special(self, target) -> str:
-            if self.rage <= 0:
-                return f"{self.name} has no more rage - regular attack instead"
+    def use_special(self, target) -> str:
+        if self.rage <= 0:
+            return f"{self.name} has no more rage - regular attack instead"
 
-            self.rage -= 1
-            raw_damages = 2 * self.damage_output() + Dice.d6() + 6
-            dealt = target.take_damage(raw_damages)
-            return f"{self.name} is berserk. {dealt} damages (remaining rage: {self.rage})"
+        self.rage -= 1
+        raw_damages = 2 * self.damage_output() + Dice.d6() + 6
+        dealt = target.take_damage(raw_damages)
+        return f"{self.name} is berserk. {dealt} damages (remaining rage: {self.rage})"

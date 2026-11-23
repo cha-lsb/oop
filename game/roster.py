@@ -9,7 +9,7 @@ from game.item import Potion
 
 HEAL_POTION = ("Potion de soins", 10, "Hmm, c'est du sang de demon")
 def _with_potions(character, count=4):
-    for _ in range(4):
+    for _ in range(count):
         character.equip(Potion(*HEAL_POTION))
     return character
 

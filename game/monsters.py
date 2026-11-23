@@ -36,7 +36,7 @@ class Troll(Character):
 			"Troll",
 			hp=40,
 			strength=12,
-			combatr_skill=35,
+			combat_skill=35,
 			stamina=3,
 			initiative=20,
 			description="slow but strong"

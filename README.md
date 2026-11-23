@@ -1,7 +1,7 @@
 OOP - Tiny RPG game
 ========
 
-A small turn-based dungeon crawler written in Python with [pygame](https://www.pygame.org/),
+A small turn-based dungeon crawler written in Python with pygame(https://www.pygame.org/),
 built using object-oriented programming.
 Few in-game lines are in french because c'est mieux.
 
@@ -20,7 +20,7 @@ Requirements
 ------------
 
 * Python 3.11 or newer
-* [uv](https://docs.astral.sh/uv/) (recommended), or pip
+* uv(https://docs.astral.sh/uv/) (recommended), or pip
 * pygame 2.6.1 or newer (installed automatically)
 
 Installation

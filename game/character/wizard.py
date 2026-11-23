@@ -36,5 +36,5 @@ class Wizard(Character):
                     f"{self.last_roll['roll']} against {self.last_roll['target']}")
         raw_damages = Dice.d6() + 12
         dealt = target.take_damage(raw_damages, pierce_armor=True)
-        return (f"{self.name} casts a strong spell : {delt} damages!"
+        return (f"{self.name} casts a strong spell : {dealt} damages!"
                 f"({self.mana})")
