@@ -8,7 +8,7 @@ has to hardcode a pixel or a colour.
 
 WINDOW_SIZE = (960, 640)
 FPS = 60
-TITLE = "La Horde"
+TITLE = "Balladur's Gate"
 
 # --- map ----------------------------------------------------------------
 

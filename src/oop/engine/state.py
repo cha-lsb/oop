@@ -10,7 +10,7 @@ import pygame
 
 from oop.engine import input as keys
 from oop.engine import renderer
-from oop.engine.constants import (ACCENT, DEBUG_TEXT, DIM_TEXT, ENEMY_COLOR,
+from oop.engine.constants import (ACCENT, DEBUG_TEXT, DIM_TEXT, ENEMY_COLOR, TITLE,
                                   FONT_SIZE_SMALL, LINE_HEIGHT, TEXT_COLOR)
 
 ACTIONS = ["Attaquer", "Se défendre", "Boire une potion", "Capacité spéciale"]
@@ -92,7 +92,7 @@ class ExploreState(GameState):
                 CombatState(self.game, self.player, creature(), self, self.rules))
 
     def draw(self, surface):
-        renderer.title(surface, "La Horde", 40)
+        renderer.title(surface, TITLE, 40)
         self.level.draw(surface)
         renderer.draw_actor(surface, self.player,
                             self.level.screen_position(self.player.position),
@@ -225,7 +225,7 @@ class GameOverState(GameState):
             self.game.quit()
 
     def draw(self, surface):
-        headline = "LA HORDE EST REPOUSSÉE" if self.won else "GAME OVER"
+        headline = "Victory!" if self.won else "GAME OVER"
         renderer.title(surface, headline, 240, ACCENT if self.won else ENEMY_COLOR)
         renderer.text(surface, self.player.summary(), (480, 300), TEXT_COLOR,
                       center=True)
